@@ -1,0 +1,21 @@
+player_id,name,age,state_team,domestic_league,role,batting_style,bowling_style,innings_bat,runs,balls,strike_rate,batting_avg,fours,sixes,dot_pct_bat,pp_sr,mid_sr,death_sr,sr_vs_pace,sr_vs_spin,innings_bowl,overs,wickets,bowling_econ,bowling_avg,bowling_sr,dot_pct_bowl,pp_econ,mid_econ,death_econ,boundary_conceded_pct
+P101,Swastik Chikara,19,Uttar Pradesh,UP T20 / SMAT,Top-order Batter,Right Hand,Off Break,14,540,312,173.08,45.0,42,38,31.5,162.0,178.5,190.0,168.0,179.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P102,Sameer Rizvi,21,Uttar Pradesh,UP T20 / SMAT,Finisher / Middle-order,Right Hand,Off Break,13,455,268,169.78,41.36,31,34,33.0,125.0,165.0,215.4,174.0,164.0,2,4.0,2,7.5,15.0,12.0,41.6,6.0,7.2,10.0,16.6
+P103,Vignesh Puthur,23,Kerala,KCL / SMAT,Bowling All-Rounder,Left Hand,Slow Left-Arm Orthodox,8,145,92,157.61,29.0,11,9,38.0,110.0,140.0,188.0,162.0,148.0,12,44.0,18,6.85,16.7,14.6,48.2,6.2,6.5,8.8,12.4
+P104,Abhinandan Singh,20,Delhi,DPL / SMAT,Death-overs Pacer,Right Hand,Right-arm Fast,0,0,0,0.0,0.0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,11,41.2,19,7.62,16.5,13.0,52.4,7.1,6.9,8.4,13.1
+P105,Priyansh Arya,23,Delhi,DPL / SMAT,Opening Batter,Left Hand,Off Break,12,488,274,178.1,44.36,46,31,29.8,184.2,172.0,175.0,182.0,172.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P106,Musheer Khan,19,Mumbai,Ranji / SMAT,Batting All-Rounder,Right Hand,Slow Left-Arm Orthodox,10,380,265,143.4,42.22,34,14,36.5,132.0,146.0,162.0,141.0,146.0,9,28.0,11,6.4,16.2,15.2,46.0,5.8,6.2,8.2,11.8
+P107,Ayush Mhatre,17,Mumbai,Ranji / SMAT,Top-order Batter,Right Hand,Off Break,9,410,270,151.85,45.55,40,18,34.0,158.0,148.0,152.0,155.0,147.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P108,Vipraj Nigam,20,Uttar Pradesh,UP T20,Leg-Spin Bowling All-Rounder,Right Hand,Right-arm Leg Break,8,162,98,165.31,27.0,12,11,35.0,115.0,152.0,205.0,172.0,154.0,11,38.0,16,7.1,16.8,14.2,44.5,7.0,6.7,8.6,13.5
+P109,Gurnoor Brar,24,Punjab,SMAT,Express Pacer,Left Hand,Right-arm Fast,3,25,18,138.89,12.5,2,1,50.0,0.0,120.0,160.0,140.0,135.0,10,36.0,15,7.88,18.9,14.4,54.0,6.8,7.4,9.2,14.2
+P110,Digvesh Rathi,21,Delhi,DPL,Mystery Spinner,Right Hand,Right-arm Leg Break / Carrom Ball,4,38,24,158.33,19.0,3,2,37.5,0.0,145.0,180.0,160.0,155.0,12,46.0,21,6.32,13.8,13.1,51.0,5.9,6.0,7.8,10.9
+P111,Manav Suthar,22,Rajasthan,Ranji / Duleep / SMAT,Left-Arm Spinner All-Rounder,Left Hand,Slow Left-Arm Orthodox,9,195,130,150.0,27.86,16,10,39.0,110.0,142.0,182.0,148.0,152.0,14,52.0,22,6.25,14.7,14.1,49.5,5.6,6.1,7.9,11.2
+P112,Ashutosh Sharma,25,Railways,SMAT,Pace-Hitting Finisher,Right Hand,Right-arm Medium,11,310,155,200.0,34.44,18,29,32.0,0.0,172.0,234.5,208.0,188.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P113,Aniket Verma,20,Madhya Pradesh,MP League / SMAT,Middle-order Batter,Right Hand,Off Break,8,265,162,163.58,37.86,22,17,34.2,120.0,158.0,208.0,168.0,158.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P114,Kuldip Yadav,23,Rajasthan,SMAT,Left-arm Pacer,Left Hand,Left-arm Fast Medium,4,18,14,128.57,9.0,1,1,50.0,0.0,110.0,140.0,130.0,125.0,10,37.0,14,7.45,19.6,15.8,50.0,6.9,7.1,8.9,13.8
+P115,Urvil Patel,26,Gujarat,SMAT,Wicket-Keeper Batter,Right Hand,None,12,430,230,186.96,39.09,42,28,30.2,192.0,178.0,195.0,190.0,182.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P116,Hardik Raj,18,Karnataka,Maharaja T20,Bowling All-Rounder,Left Hand,Slow Left-Arm Orthodox,9,180,112,160.71,30.0,14,12,36.0,115.0,145.0,202.0,165.0,155.0,11,39.0,15,6.72,17.4,15.6,47.0,6.1,6.4,8.5,12.0
+P117,Zeeshan Ansari,24,Uttar Pradesh,UP T20,Leg-Spinner,Right Hand,Right-arm Leg Break,4,22,18,122.22,11.0,1,1,44.0,0.0,115.0,140.0,120.0,125.0,13,48.0,23,6.55,13.6,12.5,50.5,6.2,6.3,8.0,11.5
+P118,Rohan Kunnummal,26,Kerala,Ranji / SMAT,Top-order Batter,Right Hand,Off Break,11,385,255,150.98,38.5,38,16,35.5,155.0,145.0,158.0,152.0,149.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+P119,Prince Choudhary,24,Delhi,DPL,Wrist Spinner,Right Hand,Right-arm Leg Break,3,15,12,125.0,7.5,1,1,45.0,0.0,110.0,140.0,120.0,130.0,9,32.0,13,6.9,16.9,14.7,46.5,6.5,6.6,8.5,12.8
+P120,Angkrish Raghuvanshi,20,Delhi / Mumbai,SMAT / DPL,Top-order Batter,Right Hand,Slow Left-Arm Orthodox,12,410,275,149.09,37.27,41,15,35.0,150.0,148.0,152.0,150.0,148.0,4,8.0,2,7.2,28.8,24.0,40.0,6.5,7.0,9.5,15.0
