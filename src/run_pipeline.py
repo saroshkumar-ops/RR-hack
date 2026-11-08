@@ -16,6 +16,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 import pandas as pd
 from tabulate import tabulate
 from src.models.talent_ranker import rank_uncapped_players
+from src.utils.schema_mapper import standardize_dataframe, apply_sample_size_filter
 
 def load_data() -> pd.DataFrame:
     """Loads raw data pack if available, otherwise falls back to sample dataset."""
@@ -23,13 +24,16 @@ def load_data() -> pd.DataFrame:
     if raw_files:
         filepath = raw_files[0]
         print(f"[+] Found official data pack file: {filepath}")
-        if filepath.endswith('.xlsx'):
-            return pd.read_excel(filepath)
-        return pd.read_csv(filepath)
+        df = pd.read_excel(filepath) if filepath.endswith('.xlsx') else pd.read_csv(filepath)
+    else:
+        sample_path = os.path.join(REPO_ROOT, "data/sample/uncapped_players_sample.csv")
+        print(f"[*] No raw data pack found in data/raw/. Using sample benchmark dataset ({sample_path})...")
+        df = pd.read_csv(sample_path)
     
-    sample_path = os.path.join(REPO_ROOT, "data/sample/uncapped_players_sample.csv")
-    print(f"[*] No raw data pack found in data/raw/. Using sample benchmark dataset ({sample_path})...")
-    return pd.read_csv(sample_path)
+    # Auto-standardize schema and sanitize
+    df_clean = standardize_dataframe(df)
+    df_filtered = apply_sample_size_filter(df_clean, min_balls=15, min_overs=4.0)
+    return df_filtered
 
 def main():
     print("=" * 80)

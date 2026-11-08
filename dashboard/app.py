@@ -16,6 +16,7 @@ if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
 from src.models.talent_ranker import rank_uncapped_players
+from src.utils.schema_mapper import standardize_dataframe, apply_sample_size_filter
 from src.config import RR_TACTICAL_PRIORITIES, BENCHMARKS
 
 # Page configuration
@@ -69,7 +70,9 @@ def get_data():
         sample_path = os.path.join(REPO_ROOT, "data/sample/uncapped_players_sample.csv")
         df = pd.read_csv(sample_path)
     
-    return rank_uncapped_players(df)
+    df_clean = standardize_dataframe(df)
+    df_filtered = apply_sample_size_filter(df_clean, min_balls=15, min_overs=4.0)
+    return rank_uncapped_players(df_filtered)
 
 df_all = get_data()
 
