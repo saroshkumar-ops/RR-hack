@@ -1,0 +1,18 @@
+{
+    "competitions_count": 141,
+    "matches_count": 883,
+    "total_balls": 200999,
+    "legal_balls": 192709,
+    "total_team_runs": 281450,
+    "total_bowler_runs": 277888,
+    "total_wickets": 10881,
+    "dot_ball_count": 57435,
+    "fours_count": 23283,
+    "sixes_count": 12811,
+    "innings_distribution": {
+        "1": 105727,
+        "2": 95234,
+        "3": 25,
+        "4": 13
+    }
+}
