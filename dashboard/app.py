@@ -1,6 +1,6 @@
 """
 Rajasthan Royals - SupeRR Selector Season 2
-Interactive Scouting & Auction Strategy Dashboard
+Interactive ML Clutch & Pressure Analytics Dashboard
 """
 import os
 import sys
@@ -10,287 +10,257 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-# Setup system path
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from src.models.talent_ranker import rank_uncapped_players
-from src.utils.schema_mapper import standardize_dataframe, apply_sample_size_filter
-from src.config import RR_TACTICAL_PRIORITIES, BENCHMARKS
-
 # Page configuration
 st.set_page_config(
-    page_title="SupeRR Selector S2 | Rajasthan Royals Scouting",
+    page_title="SupeRR Selector S2 | Pressure Analytics",
     page_icon="🏏",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling (Royals Pink #EA1A80, Royals Blue #001D48, Accent Gold #FDB913)
+# Custom Royals Styling
 st.markdown("""
 <style>
     .main-title {
         color: #EA1A80;
-        font-size: 2.3rem;
+        font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 0px;
     }
     .sub-title {
         color: #8C9BAE;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         margin-top: 0px;
         margin-bottom: 20px;
-    }
-    .metric-card {
-        background-color: #0c1829;
-        border-radius: 10px;
-        padding: 15px;
-        border-left: 5px solid #EA1A80;
     }
     .badge-pink {
         background-color: #EA1A80;
         color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 4px 10px;
+        border-radius: 5px;
         font-weight: bold;
+        font-size: 0.85rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
 @st.cache_data
-def get_data():
-    raw_path = os.path.join(REPO_ROOT, "data/raw")
-    csv_files = [os.path.join(raw_path, f) for f in os.listdir(raw_path) if f.endswith(('.csv', '.xlsx'))] if os.path.exists(raw_path) else []
-    
-    if csv_files:
-        f = csv_files[0]
-        df = pd.read_excel(f) if f.endswith('.xlsx') else pd.read_csv(f)
-    else:
-        sample_path = os.path.join(REPO_ROOT, "data/sample/uncapped_players_sample.csv")
-        df = pd.read_csv(sample_path)
-    
-    df_clean = standardize_dataframe(df)
-    df_filtered = apply_sample_size_filter(df_clean, min_balls=15, min_overs=4.0)
-    return rank_uncapped_players(df_filtered)
+def load_ml_rankings():
+    proc_dir = os.path.join(REPO_ROOT, "data/processed")
+    bat_path = os.path.join(proc_dir, "ml_full_batters_under_pressure.csv")
+    bowl_path = os.path.join(proc_dir, "ml_full_bowlers_under_pressure.csv")
 
-df_all = get_data()
+    if not os.path.exists(bat_path) or not os.path.exists(bowl_path):
+        st.error("ML Ranking files not found. Please run `python src/ml/pressure_ranker.py` first.")
+        st.stop()
+
+    df_bat = pd.read_csv(bat_path)
+    df_bowl = pd.read_csv(bowl_path)
+    return df_bat, df_bowl
+
+df_bat, df_bowl = load_ml_rankings()
 
 # Header
 col1, col2 = st.columns([4, 1])
 with col1:
     st.markdown('<div class="main-title">🏏 Rajasthan Royals: SupeRR Selector S2</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">IPL 2027 Auction Strategy • Uncapped Talent Identification Framework</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Machine Learning Win Probability Leverage & Empirical Bayes Pressure Rankings (2022–2026)</div>', unsafe_allow_html=True)
 with col2:
     st.markdown(
         """<div style='text-align: right; padding-top: 15px;'>
-        <span class='badge-pink'>OFFICIAL RR FRAMEWORK</span>
+        <span class='badge-pink'>AUC: 0.9212 | 200,999 BALLS</span>
         </div>""", unsafe_allow_html=True
     )
 
-# Sidebar filters
-st.sidebar.header("🎯 Scouting Filters")
-max_age = st.sidebar.slider("Maximum Age", min_value=17, max_value=26, value=25)
-role_filter = st.sidebar.multiselect(
-    "Filter by Role",
-    options=list(df_all['role'].unique()),
-    default=list(df_all['role'].unique())
+# Sidebar controls
+st.sidebar.header("⚙️ ML Filter Controls")
+min_bat_matches = st.sidebar.slider("Min High-Pressure Matches (Batters)", min_value=10, max_value=30, value=10)
+min_bowl_matches = st.sidebar.slider("Min High-Pressure Matches (Bowlers)", min_value=15, max_value=35, value=15)
+
+bat_arch_filter = st.sidebar.multiselect(
+    "Batter Clutch Archetype",
+    options=list(df_bat['ml_archetype'].unique()),
+    default=list(df_bat['ml_archetype'].unique())
 )
-archetype_filter = st.sidebar.multiselect(
-    "Tactical Archetype",
-    options=list(df_all['rr_tactical_archetype'].unique()),
-    default=list(df_all['rr_tactical_archetype'].unique())
+bowl_arch_filter = st.sidebar.multiselect(
+    "Bowler Clutch Archetype",
+    options=list(df_bowl['ml_archetype'].unique()),
+    default=list(df_bowl['ml_archetype'].unique())
 )
 
-filtered_df = df_all[
-    (df_all['age'] <= max_age) &
-    (df_all['role'].isin(role_filter)) &
-    (df_all['rr_tactical_archetype'].isin(archetype_filter))
-].copy()
+f_bat = df_bat[(df_bat['hp_matches'] >= min_bat_matches) & (df_bat['ml_archetype'].isin(bat_arch_filter))].copy()
+f_bowl = df_bowl[(df_bowl['hp_matches'] >= min_bowl_matches) & (df_bowl['ml_archetype'].isin(bowl_arch_filter))].copy()
 
-# Summary Metrics Row
+# KPI Summary Row
 m1, m2, m3, m4 = st.columns(4)
 with m1:
-    st.metric("Total Prospects Scouted", len(filtered_df))
+    st.metric("Qualified Pressure Batters", len(f_bat))
 with m2:
-    top10_slice = filtered_df.head(10)
-    avg_age = top10_slice['age'].mean() if not top10_slice.empty else 0
-    st.metric("Top 10 Average Age", f"{avg_age:.1f} yrs")
+    st.metric("Qualified Pressure Bowlers", len(f_bowl))
 with m3:
-    teen_count = len(filtered_df[filtered_df['age'] < 20])
-    st.metric("Teen Prodigies (<20 yrs)", teen_count)
+    top_b = f_bat.iloc[0]['striker_name'] if not f_bat.empty else "N/A"
+    st.metric("#1 Batter Under Pressure", top_b)
 with m4:
-    finisher_count = len(filtered_df[filtered_df['rr_tactical_archetype'].str.contains('Finisher|Enforcer', na=False)])
-    st.metric("High-Leverage Specialists", finisher_count)
+    top_bw = f_bowl.iloc[0]['bowler_name'] if not f_bowl.empty else "N/A"
+    st.metric("#1 Bowler Under Pressure", top_bw)
 
 st.markdown("---")
 
-# Main Content Tabs
+# Tabs
 tab1, tab2, tab3, tab4 = st.tabs([
-    "🏆 Top 10 Youngest Uncapped Board",
-    "🎯 Player Radar & Deep Dive",
-    "📈 Tactical Archetypes & Needs Fit",
-    "📋 Auction War-Room Pitch"
+    "🏆 Top 10 Leaderboards",
+    "📊 Consistency & Clustering Explorer",
+    "🔍 Player Deep-Dive & Baseline Delta",
+    "📋 Methodology Summary"
 ])
 
-# TAB 1: Top 10 Board
+# TAB 1: Top 10 Leaderboards
 with tab1:
-    st.subheader("⭐ The Top 10 Youngest Uncapped Picks for RR")
-    st.caption("Ranked by Royals Composite Score (combines phase performance, ceiling multiplier, and tactical archetype fit).")
+    c1, c2 = st.columns(2)
 
-    top10 = filtered_df.head(10).copy()
-    
-    display_df = top10[[
-        'rank', 'name', 'age', 'role', 'domestic_league', 
-        'royals_composite_score', 'rr_tactical_archetype', 'estimated_auction_bracket'
-    ]].rename(columns={
-        'rank': 'Rank',
-        'name': 'Player',
-        'age': 'Age',
-        'role': 'Role',
-        'domestic_league': 'Tournament/League',
-        'royals_composite_score': 'RR Composite Score',
-        'rr_tactical_archetype': 'Tactical Archetype',
-        'estimated_auction_bracket': 'Projected Auction Bracket'
-    })
+    with c1:
+        st.subheader("🏏 Top 10 Batters Under Pressure")
+        st.caption("Ranked by Context-Normalized RAE, Clutch Delta, Match Consistency & Bayesian Shrinkage.")
+        top10_bat = f_bat.head(10)[['rank', 'striker_name', 'hp_matches', 'raw_hp_sr', 'bayes_hp_rae', 'bayes_clutch_delta', 'bayes_consistency_pct', 'batting_clutch_score', 'ml_archetype']].rename(columns={
+            'rank': 'Rank', 'striker_name': 'Batter', 'hp_matches': 'HP Matches',
+            'raw_hp_sr': 'HP SR', 'bayes_hp_rae': 'Bayes RAE/100',
+            'bayes_clutch_delta': 'Clutch Δ', 'bayes_consistency_pct': 'Consistency %',
+            'batting_clutch_score': 'Score', 'ml_archetype': 'ML Archetype'
+        })
+        st.dataframe(top10_bat, use_container_width=True, hide_index=True)
 
-    st.dataframe(
-        display_df,
-        use_container_width=True,
-        hide_index=True
-    )
+        fig_bat = px.bar(
+            f_bat.head(10), x='batting_clutch_score', y='striker_name', orientation='h',
+            color='ml_archetype', title="Top 10 Batters: Clutch Score",
+            labels={'batting_clutch_score': 'Batting Clutch Score', 'striker_name': ''},
+            color_discrete_sequence=['#EA1A80', '#0075FF', '#FDB913']
+        )
+        fig_bat.update_layout(yaxis={'categoryorder': 'total ascending'}, height=380)
+        st.plotly_chart(fig_bat, use_container_width=True)
 
-    # Visual Bar Chart of Top 10
-    fig = px.bar(
-        top10,
-        x='name',
-        y='royals_composite_score',
-        color='rr_tactical_archetype',
-        hover_data=['age', 'domestic_league', 'estimated_auction_bracket'],
-        title="Top 10 Prospects Ranked by Royals Composite Score",
-        labels={'name': 'Player Name', 'royals_composite_score': 'Score', 'rr_tactical_archetype': 'Tactical Role'},
-        color_discrete_sequence=['#EA1A80', '#0075FF', '#00C49F', '#FFBB28', '#FF8042']
-    )
-    fig.update_layout(xaxis_tickangle=-30, height=420)
-    st.plotly_chart(fig, use_container_width=True)
+    with c2:
+        st.subheader("🎯 Top 10 Bowlers Under Pressure")
+        st.caption("Ranked by Phase-Normalized Runs Saved (RSAE), Wicket Rate, Match Consistency & Bayesian Shrinkage.")
+        top10_bowl = f_bowl.head(10)[['rank', 'bowler_name', 'hp_matches', 'hp_overs', 'bayes_hp_rsae', 'bayes_hp_sr', 'bayes_consistency_pct', 'bowling_clutch_score', 'ml_archetype']].rename(columns={
+            'rank': 'Rank', 'bowler_name': 'Bowler', 'hp_matches': 'HP Matches',
+            'hp_overs': 'HP Overs', 'bayes_hp_rsae': 'Bayes RSAE/Ov',
+            'bayes_hp_sr': 'Bayes Wkt SR', 'bayes_consistency_pct': 'Consistency %',
+            'bowling_clutch_score': 'Score', 'ml_archetype': 'ML Archetype'
+        })
+        st.dataframe(top10_bowl, use_container_width=True, hide_index=True)
 
-# TAB 2: Player Radar & Deep Dive
+        fig_bowl = px.bar(
+            f_bowl.head(10), x='bowling_clutch_score', y='bowler_name', orientation='h',
+            color='ml_archetype', title="Top 10 Bowlers: Clutch Score",
+            labels={'bowling_clutch_score': 'Bowling Clutch Score', 'bowler_name': ''},
+            color_discrete_sequence=['#001D48', '#EA1A80', '#00C49F']
+        )
+        fig_bowl.update_layout(yaxis={'categoryorder': 'total ascending'}, height=380)
+        st.plotly_chart(fig_bowl, use_container_width=True)
+
+# TAB 2: Consistency & Clustering
 with tab2:
-    st.subheader("🔍 Scout an Individual Player Profile")
-    selected_player = st.selectbox("Select Player for Detailed Radar Analysis:", options=filtered_df['name'].tolist())
+    st.subheader("📈 Reliability vs. Impact Across High-Pressure Matches")
+    sc1, sc2 = st.columns(2)
 
-    if selected_player:
-        p_row = filtered_df[filtered_df['name'] == selected_player].iloc[0]
+    with sc1:
+        fig_sc_bat = px.scatter(
+            f_bat, x='bayes_hp_rae', y='bayes_consistency_pct',
+            size='hp_balls', color='ml_archetype', hover_name='striker_name',
+            hover_data=['hp_matches', 'batting_clutch_score', 'uncertainty_se'],
+            title="Batters: Pressure Consistency (%) vs. Bayesian Runs Above Expected",
+            labels={'bayes_hp_rae': 'Bayesian Pressure RAE / 100 Balls', 'bayes_consistency_pct': 'Positive Impact Matches (%)'}
+        )
+        st.plotly_chart(fig_sc_bat, use_container_width=True)
+
+    with sc2:
+        fig_sc_bowl = px.scatter(
+            f_bowl, x='bayes_hp_rsae', y='bayes_consistency_pct',
+            size='hp_overs', color='ml_archetype', hover_name='bowler_name',
+            hover_data=['hp_matches', 'bowling_clutch_score', 'uncertainty_se'],
+            title="Bowlers: Pressure Consistency (%) vs. Bayesian Runs Saved Above Expected",
+            labels={'bayes_hp_rsae': 'Bayesian Runs Saved / Over', 'bayes_consistency_pct': 'Positive Impact Matches (%)'}
+        )
+        st.plotly_chart(fig_sc_bowl, use_container_width=True)
+
+# TAB 3: Player Deep Dive
+with tab3:
+    st.subheader("🔍 Player Baseline vs. Pressure Comparison")
+    mode = st.radio("Select Discipline:", ["Batter", "Bowler"], horizontal=True)
+
+    if mode == "Batter":
+        player = st.selectbox("Select Qualified Batter:", options=f_bat['striker_name'].tolist())
+        row = f_bat[f_bat['striker_name'] == player].iloc[0]
 
         pcol1, pcol2 = st.columns([1, 1])
-
         with pcol1:
-            st.markdown(f"### **{p_row['name']}** ({p_row['age']} yrs)")
-            st.markdown(f"**Primary Role:** {p_row['role']} | **State/League:** {p_row['domestic_league']}")
-            st.markdown(f"**Tactical Archetype:** `{p_row['rr_tactical_archetype']}`")
-            st.markdown(f"**Age Runway Tier:** {p_row['age_runway_tier']} (Multiplier: `x{p_row['age_multiplier']}`)")
-            st.markdown(f"**Projected Auction Target:** `{p_row['estimated_auction_bracket']}`")
+            st.markdown(f"### **{row['striker_name']}** (Rank #{int(row['rank'])})")
+            st.markdown(f"**ML Archetype:** `{row['ml_archetype']}`")
+            st.markdown(f"**Sample Size:** {int(row['hp_balls'])} High-Pressure Balls across {int(row['hp_matches'])} Matches (SE: `±{row['uncertainty_se']}`)")
             
-            st.info(f"💡 **Tactical Fit Rationale:**\n{p_row['tactical_reasoning']}")
+            k1, k2, k3 = st.columns(3)
+            k1.metric("Normal Baseline SR", f"{row['raw_base_sr']:.1f}")
+            k2.metric("High-Pressure SR", f"{row['raw_hp_sr']:.1f}", delta=f"{row['raw_hp_sr'] - row['raw_base_sr']:+.1f}")
+            k3.metric("Bayesian Clutch Δ", f"{row['bayes_clutch_delta']:+.1f} RAE")
 
-            # Key Numbers Grid
-            kpi_c1, kpi_c2, kpi_c3 = st.columns(3)
-            with kpi_c1:
-                st.metric("Strike Rate", f"{p_row['strike_rate']:.1f}" if p_row['balls'] > 0 else "N/A")
-                st.metric("Death SR", f"{p_row['death_sr']:.1f}" if p_row['balls'] > 0 else "N/A")
-            with kpi_c2:
-                st.metric("Economy", f"{p_row['bowling_econ']:.2f}" if p_row['overs'] > 0 else "N/A")
-                st.metric("Death Economy", f"{p_row['death_econ']:.2f}" if p_row['overs'] > 0 else "N/A")
-            with kpi_c3:
-                st.metric("Dot Ball %", f"{p_row['dot_pct_bat']:.1f}%" if p_row['balls'] > 0 else f"{p_row['dot_pct_bowl']:.1f}%")
-                st.metric("RR Score", f"{p_row['royals_composite_score']:.1f}")
+            k4, k5, k6 = st.columns(3)
+            k4.metric("Boundary % (HP)", f"{row['hp_boundary_pct']:.1f}%")
+            k5.metric("Consistency %", f"{row['bayes_consistency_pct']:.1f}%")
+            k6.metric("Clutch Score", f"{row['batting_clutch_score']:.1f}/100")
 
         with pcol2:
-            # Radar Chart of attributes normalized to 100
-            radar_categories = ['Death Execution', 'Powerplay Impact', 'Strike/Dot Efficiency', 'Versatility', 'Ceiling Potential']
+            fig_comp = go.Figure(data=[
+                go.Bar(name='Normal Baseline (LI < 6.5)', x=['Context RAE / 100'], y=[row['base_rae_per_100']], marker_color='#8C9BAE'),
+                go.Bar(name='High Pressure (LI >= 6.5)', x=['Context RAE / 100'], y=[row['hp_rae_per_100']], marker_color='#EA1A80')
+            ])
+            fig_comp.update_layout(title=f"Context-Adjusted Performance Shift: {player}", barmode='group', height=340)
+            st.plotly_chart(fig_comp, use_container_width=True)
+
+    else:
+        player = st.selectbox("Select Qualified Bowler:", options=f_bowl['bowler_name'].tolist())
+        row = f_bowl[f_bowl['bowler_name'] == player].iloc[0]
+
+        pcol1, pcol2 = st.columns([1, 1])
+        with pcol1:
+            st.markdown(f"### **{row['bowler_name']}** (Rank #{int(row['rank'])})")
+            st.markdown(f"**ML Archetype:** `{row['ml_archetype']}`")
+            st.markdown(f"**Sample Size:** {row['hp_overs']} High-Pressure Overs across {int(row['hp_matches'])} Matches (SE: `±{row['uncertainty_se']}`)")
             
-            # Normalization logic
-            death_val = (p_row['death_sr'] / 220.0 * 100) if p_row['balls'] > 20 else ((12.0 - p_row['death_econ']) / 4.0 * 100)
-            pp_val = (p_row['pp_sr'] / 180.0 * 100) if p_row['balls'] > 20 else ((9.0 - p_row['pp_econ']) / 3.0 * 100)
-            dot_val = (100 - p_row['dot_pct_bat']) if p_row['balls'] > 20 else (p_row['dot_pct_bowl'] * 1.8)
-            adapt_val = p_row.get('adaptability_score', 70) / 2.0
-            ceiling_val = p_row['age_multiplier'] * 75
+            k1, k2, k3 = st.columns(3)
+            k1.metric("Normal Economy", f"{row['raw_base_econ']:.2f}")
+            k2.metric("High-Pressure Econ", f"{row['raw_hp_econ']:.2f}")
+            k3.metric("Bayes RSAE / Over", f"{row['bayes_hp_rsae']:+.2f}")
 
-            player_values = [
-                min(max(float(death_val), 10), 100),
-                min(max(float(pp_val), 10), 100),
-                min(max(float(dot_val), 10), 100),
-                min(max(float(adapt_val), 10), 100),
-                min(max(float(ceiling_val), 10), 100)
-            ]
+            k4, k5, k6 = st.columns(3)
+            k4.metric("Bayes Wicket SR", f"{row['bayes_hp_sr']:.1f} balls")
+            k5.metric("Consistency %", f"{row['bayes_consistency_pct']:.1f}%")
+            k6.metric("Clutch Score", f"{row['bowling_clutch_score']:.1f}/100")
 
-            fig_radar = go.Figure()
-            fig_radar.add_trace(go.Scatterpolar(
-                r=player_values,
-                theta=radar_categories,
-                fill='toself',
-                name=p_row['name'],
-                line=dict(color='#EA1A80', width=2),
-                fillcolor='rgba(234, 26, 128, 0.3)'
-            ))
-            fig_radar.add_trace(go.Scatterpolar(
-                r=[60, 60, 60, 60, 60],
-                theta=radar_categories,
-                name='League Baseline',
-                line=dict(color='#8C9BAE', dash='dash', width=1.5)
-            ))
-            fig_radar.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-                showlegend=True,
-                title=f"Tactical Skill Radar: {p_row['name']}",
-                height=380
-            )
-            st.plotly_chart(fig_radar, use_container_width=True)
+        with pcol2:
+            fig_comp = go.Figure(data=[
+                go.Bar(name='Normal Baseline (LI < 6.5)', x=['Runs Saved / Over vs Par'], y=[row['base_rsae_per_over']], marker_color='#8C9BAE'),
+                go.Bar(name='High Pressure (LI >= 6.5)', x=['Runs Saved / Over vs Par'], y=[row['hp_rsae_per_over']], marker_color='#001D48')
+            ])
+            fig_comp.update_layout(title=f"Phase-Adjusted Runs Saved Shift: {player}", barmode='group', height=340)
+            st.plotly_chart(fig_comp, use_container_width=True)
 
-# TAB 3: Tactical Archetypes & Needs Fit
-with tab3:
-    st.subheader("🎯 Rajasthan Royals Tactical Squad Gaps & Archetypes")
-    
-    st.write("For IPL 2027, the Royals' war room prioritizes filling 5 core domestic archetypes:")
-    
-    arch_cols = st.columns(len(RR_TACTICAL_PRIORITIES))
-    for i, (key, info) in enumerate(RR_TACTICAL_PRIORITIES.items()):
-        with arch_cols[i]:
-            st.markdown(f"**{info['title']}**")
-            st.caption(f"Priority: `{info['priority_level']}`")
-            st.write(info['description'])
-
-    st.markdown("---")
-    st.subheader("📊 Prospect Distribution by Archetype")
-    
-    fig_pie = px.pie(
-        filtered_df,
-        names='rr_tactical_archetype',
-        title="Distribution of Scouted Players Across RR Tactical Roles",
-        color_discrete_sequence=['#EA1A80', '#001D48', '#0075FF', '#00C49F', '#FFBB28']
-    )
-    st.plotly_chart(fig_pie, use_container_width=True)
-
-# TAB 4: Auction War-Room Pitch
+# TAB 4: Methodology Summary
 with tab4:
-    st.subheader("📋 Executive Pitch Summary for Kumar Sangakkara & Giles Lindsay")
-    
+    st.subheader("📋 Analytical Architecture Summary")
     st.markdown("""
-    ### **Strategic Blueprint: Rajasthan Royals IPL 2027 Talent Acquisition**
-    
-    **1. Problem Statement & Franchise Context:**
-    * In IPL auction dynamics, marquee capped stars command upwards of ₹15–25 Crore. 
-    * The differentiator between playoff teams and champions is **uncapped efficiency**—securing high-ceiling, role-specific domestic players at baseline/controlled prices (₹30L – ₹1.5Cr) who perform in high-leverage phases.
-    
-    **2. Scouting Methodology:**
-    * **No Vanity Metrics:** We reject raw averages and aggregate strike rates.
-    * **Phase Weighting:** Every ball is evaluated contextually: Powerplay boundary rate, Middle overs strike rotation & spin choke, and Death overs (16–20) acceleration and execution.
-    * **Age-Ceiling Curve:** Youth (<21) receives a deliberate analytical multiplier to reflect rapid biological and skill development curves under RR's High-Performance Centre.
+    ### **1. Defining Pressure via Machine Learning (Win Probability Leverage)**
+    * Trained a **HistGradientBoosting Classifier** across **200,999 ball-by-ball deliveries** (`AUC = 0.9212`).
+    * Calculated counterfactual win probability swing ($|\\hat{P}(\\text{Win} \\mid \\text{Six}) - \\hat{P}(\\text{Win} \\mid \\text{Wicket})|$) to derive a continuous **Leverage Index ($LI \\in [0, 10]$)**.
+    * Deliveries with **$LI \\ge 6.5$** capture the top **29.4% most decisive moments** (tight chases, death overs, top-order collapses, Super Overs).
 
-    **3. Core Recommendations for the War Room:**
-    * Target **Swastik Chikara** or **Sameer Rizvi** to secure explosive Indian finishing power against 145kmph+ pace.
-    * Secure young mystery spinners like **Digvesh Rathi** or multi-format spin all-rounders like **Manav Suthar** to control middle overs at the Sawai Mansingh Stadium.
-    * Target death-overs enforcers like **Abhinandan Singh** for hard-length yorker suppression in tight finishes.
+    ### **2. Fair Comparisons & Context Normalization**
+    * Addressed format discrepancy (**IPL implied SR 139.5 vs T20I 129.3**) and phase bias (**Death par ~10.3 vs Powerplay ~7.5**) using **Runs Above Expected (RAE)** and **Runs Saved Above Expected (RSAE)** stratified by `(Match Format × Innings Phase)`.
+
+    ### **3. Empirical Bayes Shrinkage & Reliability**
+    * Eliminated small-sample flukes using **Empirical Bayes Shrinkage** ($v_0 = 80$ balls for batters; $v_0 = 150$ balls for bowlers; $v_0 = 10$ matches for consistency).
+    * Integrated **Match-to-Match Consistency Rate** directly into the composite Clutch Score so players must deliver *repeatedly* across high-stakes contests.
     """)
-    
-    st.success("✅ Ready for export into presentation pitch deck (PPT/PDF).")
