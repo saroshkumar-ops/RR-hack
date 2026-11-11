@@ -29,4 +29,5 @@ Thumbs.db
 
 # Output artifacts & exports
 reports/*.pdf
+!reports/SupeRR_Selector_S2_Methodology_Report.pdf
 reports/*.pptx

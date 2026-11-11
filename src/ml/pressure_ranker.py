@@ -118,8 +118,8 @@ def run_full_ml_pipeline():
 
     bat['batting_clutch_score'] = (rae_norm + delta_norm + cons_norm + exec_norm).round(2)
 
-    # Filter qualified batters (>= 150 HP balls and >= 10 HP matches)
-    qual_bat = bat[(bat['hp_balls'] >= 150) & (bat['hp_matches'] >= 10)].copy()
+    # Filter qualified batters (>= 200 HP balls, >= 20 HP matches, and non-negative pressure uplift)
+    qual_bat = bat[(bat['hp_balls'] >= 200) & (bat['hp_matches'] >= 20) & (bat['bayes_clutch_delta'] >= 0)].copy()
     qual_bat = cluster_batter_archetypes(qual_bat)
     top_batters = qual_bat.sort_values(by='batting_clutch_score', ascending=False).reset_index()
     top_batters['rank'] = top_batters.index + 1
@@ -194,8 +194,8 @@ def run_full_ml_pipeline():
 
     bowl['bowling_clutch_score'] = (rsae_norm + wkt_norm + bcons_norm + cd_dot_norm).round(2)
 
-    # Filter qualified bowlers (>= 30 HP overs and >= 15 HP matches)
-    qual_bowl = bowl[(bowl['hp_overs'] >= 30.0) & (bowl['hp_matches'] >= 15)].copy()
+    # Filter qualified bowlers (>= 35.0 HP overs, >= 20 HP matches, and non-negative pressure uplift)
+    qual_bowl = bowl[(bowl['hp_overs'] >= 35.0) & (bowl['hp_matches'] >= 20) & (bowl['bayes_clutch_delta'] >= 0)].copy()
     qual_bowl = cluster_bowler_archetypes(qual_bowl)
     top_bowlers = qual_bowl.sort_values(by='bowling_clutch_score', ascending=False).reset_index()
     top_bowlers['rank'] = top_bowlers.index + 1

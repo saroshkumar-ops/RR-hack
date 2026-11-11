@@ -114,18 +114,34 @@ class WinProbabilityModel:
         # State under potential Wicket
         w_state = df.loc[chase_mask, self.feature_cols].copy()
         w_state['wickets_in_hand'] = np.maximum(w_state['wickets_in_hand'] - 1, 0)
+        w_state['balls_remaining'] = np.maximum(w_state['balls_remaining'] - 1, 0)
+        w_state['overs_elapsed'] = w_state['overs_elapsed'] + (1.0 / 6.0)
+        w_state['rrr'] = np.where(
+            w_state['balls_remaining'] > 0,
+            np.clip(w_state['runs_needed'] / (w_state['balls_remaining'] / 6.0), 0, 36),
+            0.0
+        )
+        w_state['crr'] = np.where(w_state['overs_elapsed'] > 0, w_state['cum_runs'] / w_state['overs_elapsed'], 8.0)
         p_wicket = self.model.predict_proba(w_state)[:, 1]
 
         # State under potential Boundary (Six)
         b_state = df.loc[chase_mask, self.feature_cols].copy()
         b_state['runs_needed'] = np.maximum(b_state['runs_needed'] - 6, 0)
+        b_state['cum_runs'] = b_state['cum_runs'] + 6
         b_state['balls_remaining'] = np.maximum(b_state['balls_remaining'] - 1, 0)
+        b_state['overs_elapsed'] = b_state['overs_elapsed'] + (1.0 / 6.0)
+        b_state['rrr'] = np.where(
+            b_state['balls_remaining'] > 0,
+            np.clip(b_state['runs_needed'] / (b_state['balls_remaining'] / 6.0), 0, 36),
+            0.0
+        )
+        b_state['crr'] = np.where(b_state['overs_elapsed'] > 0, b_state['cum_runs'] / b_state['overs_elapsed'], 8.0)
         p_boundary = self.model.predict_proba(b_state)[:, 1]
 
         # Expected Swing (Max Win Prob Swing between boundary and wicket)
+        # Scaled by 38.0 so the ~70th percentile of chase leverage aligns symmetrically with 6.5 cutoff
         swing = np.abs(p_boundary - p_wicket)
-        # Scale to 0 - 10 Pressure Index
-        pressure[chase_mask] = np.clip(swing * 14.0, 0.5, 10.0)
+        pressure[chase_mask] = np.clip(swing * 38.0, 0.5, 10.0)
 
         # 1st Innings: Crisis + Death overs
         inn1_mask = (df['innings'] == 1)
