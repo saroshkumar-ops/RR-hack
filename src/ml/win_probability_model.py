@@ -94,6 +94,8 @@ class WinProbabilityModel:
         preds = self.model.predict_proba(X)[:, 1]
         auc = roc_auc_score(y, preds)
         loss = log_loss(y, preds)
+        self.train_auc = round(float(auc), 4)
+        self.train_loss = round(float(loss), 4)
         print(f"[+] Trained Win Probability Model: AUC = {auc:.4f}, Log-Loss = {loss:.4f}")
 
     def compute_leverage_index(self, df_features: pd.DataFrame) -> pd.DataFrame:

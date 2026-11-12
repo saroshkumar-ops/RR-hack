@@ -1,0 +1,67 @@
+{
+  "total_balls": 200999,
+  "unique_matches_bbb": 867,
+  "scheduled_matches": 883,
+  "train_auc": 0.9212,
+  "train_loss": 0.3501,
+  "hp_balls_total": 70111,
+  "hp_pct_total": 34.88,
+  "inn1_total": 105727,
+  "inn1_hp": 35544,
+  "inn1_hp_pct": 33.62,
+  "inn2_total": 95234,
+  "inn2_hp": 34529,
+  "inn2_hp_pct": 36.26,
+  "qualified_batters_count": 51,
+  "qualified_bowlers_count": 67,
+  "batter_archetype_counts": {
+    "Elite Pressure Accelerator": 20,
+    "Ice-Cold Chase Anchor": 20,
+    "High-Leverage Finisher": 11
+  },
+  "bowler_archetype_counts": {
+    "Clutch Wicket Hunter": 28,
+    "Run-Choking Squeeze Specialist": 21,
+    "Balanced Pressure Enforcer": 18
+  },
+  "ordinary_vs_hp": {
+    "ordinary": {
+      "total_balls": 130888,
+      "legal_balls": 125877,
+      "mean_li": 2.52,
+      "wicket_pct": 5.23,
+      "balls_per_wkt": 19.1,
+      "boundary_pct": 18.49,
+      "dot_pct": 37.71,
+      "implied_sr": 137.27,
+      "implied_econ": 8.24,
+      "inn2_mean_rrr": 11.06
+    },
+    "high_pressure": {
+      "total_balls": 70111,
+      "legal_balls": 66832,
+      "mean_li": 8.91,
+      "wicket_pct": 6.37,
+      "balls_per_wkt": 15.7,
+      "boundary_pct": 19.02,
+      "dot_pct": 35.86,
+      "implied_sr": 143.5,
+      "implied_econ": 8.61,
+      "inn2_mean_rrr": 9.5
+    }
+  },
+  "format_summary": {
+    "T20": {
+      "total_balls": 94672,
+      "legal_balls": 90612,
+      "implied_sr": 145.27,
+      "implied_econ": 8.72
+    },
+    "T20I": {
+      "total_balls": 106327,
+      "legal_balls": 102097,
+      "implied_sr": 134.25,
+      "implied_econ": 8.06
+    }
+  }
+}

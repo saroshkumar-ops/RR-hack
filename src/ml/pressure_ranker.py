@@ -208,6 +208,85 @@ def run_full_ml_pipeline():
     top_batters.to_csv(os.path.join(proc_dir, "ml_full_batters_under_pressure.csv"), index=False)
     top_bowlers.to_csv(os.path.join(proc_dir, "ml_full_bowlers_under_pressure.csv"), index=False)
 
+    # Export report diagnostics & excluded comparison cohorts (Single Source of Truth for figures/PDF)
+    import json
+    legal_ctx = df_ctx[df_ctx['is_legal'] == True]
+    par_summary = legal_ctx.groupby(['match_format', 'phase']).agg(
+        legal_balls=('is_legal', 'sum'),
+        par_sr=('par_runs_per_ball', lambda s: round(float(s.mean() * 100.0), 2)),
+        par_econ=('par_bowler_runs_per_ball', lambda s: round(float(s.mean() * 6.0), 2)),
+    ).reset_index()
+    par_summary.to_csv(os.path.join(proc_dir, "ml_format_phase_par.csv"), index=False)
+
+    m14113_inn2 = df_ctx[(df_ctx['match_id'] == 14113) & (df_ctx['innings'] == 2)].copy().reset_index(drop=True)
+    m14113_inn2['ball_idx'] = m14113_inn2.index + 1
+    m14113_cols = ['ball_idx', 'overid', 'striker_name', 'bowler_name', 'rrr', 'ml_pressure_index', 'is_high_pressure']
+    m14113_inn2[m14113_cols].to_csv(os.path.join(proc_dir, "ml_match14113_inn2.csv"), index=False)
+
+    excl_bat = bat[(bat['hp_balls'] >= 150) & (bat['hp_matches'] >= 10) & ~(
+        (bat['hp_balls'] >= 200) & (bat['hp_matches'] >= 20) & (bat['bayes_clutch_delta'] >= 0)
+    )].copy().reset_index()
+    excl_bat.to_csv(os.path.join(proc_dir, "ml_excluded_batters.csv"), index=False)
+
+    excl_bowl = bowl[(bowl['hp_overs'] >= 30.0) & (bowl['hp_matches'] >= 15) & ~(
+        (bowl['hp_overs'] >= 35.0) & (bowl['hp_matches'] >= 20) & (bowl['bayes_clutch_delta'] >= 0)
+    )].copy().reset_index()
+    excl_bowl.to_csv(os.path.join(proc_dir, "ml_excluded_bowlers.csv"), index=False)
+
+    def _cohort_metrics(sub_df):
+        sub_legal = sub_df[sub_df['is_legal'] == True]
+        inn2 = sub_df[sub_df['innings'] == 2]
+        return {
+            "total_balls": int(len(sub_df)),
+            "legal_balls": int(len(sub_legal)),
+            "mean_li": round(float(sub_df['ml_pressure_index'].mean()), 2),
+            "wicket_pct": round(float(sub_legal['is_wicket'].mean() * 100.0), 2),
+            "balls_per_wkt": round(float(1.0 / sub_legal['is_wicket'].mean()), 1),
+            "boundary_pct": round(float(((sub_legal['runs'] == 4) | (sub_legal['runs'] == 6)).mean() * 100.0), 2),
+            "dot_pct": round(float((sub_legal['runs'] == 0).mean() * 100.0), 2),
+            "implied_sr": round(float(sub_legal['runs'].mean() * 100.0), 2),
+            "implied_econ": round(float(sub_legal['bowler_runs'].mean() * 6.0), 2),
+            "inn2_mean_rrr": round(float(inn2['rrr'].mean()), 2) if not inn2.empty else 0.0,
+        }
+
+    fmt_summary = {}
+    for fmt, g in legal_ctx.groupby('match_format'):
+        fmt_summary[str(fmt)] = {
+            "total_balls": int((df_ctx['match_format'] == fmt).sum()),
+            "legal_balls": int(len(g)),
+            "implied_sr": round(float(g['runs'].mean() * 100.0), 2),
+            "implied_econ": round(float(g['bowler_runs'].mean() * 6.0), 2),
+        }
+
+    inn1_sub = df_ctx[df_ctx['innings'] == 1]
+    inn2_sub = df_ctx[df_ctx['innings'] == 2]
+    diag = {
+        "total_balls": int(len(df_ctx)),
+        "unique_matches_bbb": int(df_ctx['match_id'].nunique()),
+        "scheduled_matches": int(len(df_matches)),
+        "train_auc": wp_engine.train_auc,
+        "train_loss": wp_engine.train_loss,
+        "hp_balls_total": int(is_hp.sum()),
+        "hp_pct_total": round(float(is_hp.mean() * 100.0), 2),
+        "inn1_total": int(len(inn1_sub)),
+        "inn1_hp": int(inn1_sub['is_high_pressure'].sum()),
+        "inn1_hp_pct": round(float(inn1_sub['is_high_pressure'].mean() * 100.0), 2),
+        "inn2_total": int(len(inn2_sub)),
+        "inn2_hp": int(inn2_sub['is_high_pressure'].sum()),
+        "inn2_hp_pct": round(float(inn2_sub['is_high_pressure'].mean() * 100.0), 2),
+        "qualified_batters_count": int(len(top_batters)),
+        "qualified_bowlers_count": int(len(top_bowlers)),
+        "batter_archetype_counts": top_batters['ml_archetype'].value_counts().to_dict(),
+        "bowler_archetype_counts": top_bowlers['ml_archetype'].value_counts().to_dict(),
+        "ordinary_vs_hp": {
+            "ordinary": _cohort_metrics(df_ctx[~is_hp]),
+            "high_pressure": _cohort_metrics(df_ctx[is_hp]),
+        },
+        "format_summary": fmt_summary,
+    }
+    with open(os.path.join(proc_dir, "ml_report_diagnostics.json"), "w", encoding="utf-8") as f:
+        json.dump(diag, f, indent=2)
+
     print("\n" + "=" * 105)
     print("  🏆 TOP 10 BATTERS UNDER PRESSURE (CONTEXT + BAYES + CONSISTENCY + K-MEANS ARCHETYPE)")
     print("=" * 105)

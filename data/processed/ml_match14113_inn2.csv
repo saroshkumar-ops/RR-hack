@@ -1,0 +1,125 @@
+ball_idx,overid,striker_name,bowler_name,rrr,ml_pressure_index,is_high_pressure
+1,1,Lokesh Rahul,Trent Boult,8.3,6.84,True
+2,1,Krishnappa Gowtham,Trent Boult,8.369747899159664,3.97,False
+3,1,Krishnappa Gowtham,Trent Boult,8.319327731092438,2.76,False
+4,1,Jason Holder,Trent Boult,8.389830508474576,10.0,True
+5,1,Jason Holder,Trent Boult,8.461538461538462,10.0,True
+6,1,Jason Holder,Trent Boult,8.53448275862069,9.2,True
+7,1,Jason Holder,Trent Boult,8.608695652173912,7.95,True
+8,2,Quinton de Kock,Prasidh Krishna,8.473684210526315,7.86,True
+9,2,Quinton de Kock,Prasidh Krishna,8.548672566371682,10.0,True
+10,2,Jason Holder,Prasidh Krishna,8.571428571428571,10.0,True
+11,2,Jason Holder,Prasidh Krishna,8.64864864864865,9.92,True
+12,2,Jason Holder,Prasidh Krishna,8.727272727272728,6.64,True
+13,2,Jason Holder,Prasidh Krishna,8.807339449541283,4.79,False
+14,3,Quinton de Kock,Trent Boult,8.88888888888889,3.63,False
+15,3,Quinton de Kock,Trent Boult,8.971962616822431,4.5,False
+16,3,Jason Holder,Trent Boult,8.886792452830187,3.99,False
+17,3,Jason Holder,Trent Boult,8.971428571428572,3.61,False
+18,3,Jason Holder,Trent Boult,9.057692307692308,5.47,False
+19,3,Jason Holder,Trent Boult,9.145631067961164,4.84,False
+20,4,Quinton de Kock,Prasidh Krishna,9.0,4.01,False
+21,4,Jason Holder,Prasidh Krishna,9.02970297029703,5.03,False
+22,4,Jason Holder,Prasidh Krishna,9.12,5.95,False
+23,4,Deepak Hooda,Prasidh Krishna,9.212121212121213,5.94,False
+24,4,Deepak Hooda,Prasidh Krishna,9.061224489795919,6.93,True
+25,4,Deepak Hooda,Prasidh Krishna,9.154639175257731,6.15,False
+26,5,Deepak Hooda,Trent Boult,9.1875,6.38,False
+27,5,Deepak Hooda,Trent Boult,9.284210526315789,5.49,False
+28,5,Deepak Hooda,Trent Boult,9.382978723404255,5.26,False
+29,5,Deepak Hooda,Trent Boult,9.225806451612904,6.39,False
+30,5,Deepak Hooda,Trent Boult,9.195652173913043,6.51,True
+31,5,Deepak Hooda,Trent Boult,9.296703296703297,6.33,False
+32,6,Deepak Hooda,Ravichandran Ashwin,9.333333333333334,5.63,False
+33,6,Quinton de Kock,Ravichandran Ashwin,9.370786516853933,6.09,False
+34,6,Deepak Hooda,Ravichandran Ashwin,9.40909090909091,6.89,True
+35,6,Quinton de Kock,Ravichandran Ashwin,9.448275862068966,7.41,True
+36,6,Deepak Hooda,Ravichandran Ashwin,9.488372093023255,7.06,True
+37,6,Quinton de Kock,Ravichandran Ashwin,9.529411764705882,6.43,False
+38,7,Deepak Hooda,Kuldeep Sen,9.642857142857142,5.05,False
+39,7,Deepak Hooda,Kuldeep Sen,9.759036144578312,4.9,False
+40,7,Quinton de Kock,Kuldeep Sen,9.804878048780488,4.78,False
+41,7,Quinton de Kock,Kuldeep Sen,9.481481481481481,10.0,True
+42,7,Quinton de Kock,Kuldeep Sen,9.6,8.51,True
+43,7,Deepak Hooda,Kuldeep Sen,9.645569620253164,5.31,False
+44,8,Quinton de Kock,Yuzvendra Chahal,9.76923076923077,4.85,False
+45,8,Deepak Hooda,Yuzvendra Chahal,9.818181818181818,4.78,False
+46,8,Quinton de Kock,Yuzvendra Chahal,9.868421052631579,4.85,False
+47,8,Deepak Hooda,Yuzvendra Chahal,9.92,7.26,True
+48,8,Deepak Hooda,Yuzvendra Chahal,10.054054054054054,7.89,True
+49,8,Deepak Hooda,Yuzvendra Chahal,9.863013698630137,9.18,True
+50,9,Deepak Hooda,Ravichandran Ashwin,9.916666666666666,9.07,True
+51,9,Quinton de Kock,Ravichandran Ashwin,9.971830985915492,7.92,True
+52,9,Deepak Hooda,Ravichandran Ashwin,10.028571428571428,8.31,True
+53,9,Deepak Hooda,Ravichandran Ashwin,10.173913043478262,6.81,True
+54,9,Quinton de Kock,Ravichandran Ashwin,10.235294117647058,6.5,True
+55,9,Deepak Hooda,Ravichandran Ashwin,10.298507462686567,4.22,False
+56,10,Deepak Hooda,Kuldeep Sen,10.363636363636363,4.4,False
+57,10,Ayush Badoni,Kuldeep Sen,10.523076923076923,4.77,False
+58,10,Quinton de Kock,Kuldeep Sen,10.59375,3.67,False
+59,10,Quinton de Kock,Kuldeep Sen,10.571428571428571,5.2,False
+60,10,Ayush Badoni,Kuldeep Sen,10.64516129032258,5.86,False
+61,10,Quinton de Kock,Kuldeep Sen,10.721311475409836,6.76,True
+62,11,Ayush Badoni,Ravichandran Ashwin,10.5,7.23,True
+63,11,Quinton de Kock,Ravichandran Ashwin,10.576271186440678,7.07,True
+64,11,Quinton de Kock,Ravichandran Ashwin,10.758620689655173,6.87,True
+65,11,Ayush Badoni,Ravichandran Ashwin,10.842105263157896,6.98,True
+66,11,Ayush Badoni,Ravichandran Ashwin,11.035714285714285,6.65,True
+67,11,Quinton de Kock,Ravichandran Ashwin,11.127272727272729,6.72,True
+68,12,Quinton de Kock,Yuzvendra Chahal,11.222222222222221,7.21,True
+69,12,Quinton de Kock,Yuzvendra Chahal,11.20754716981132,6.88,True
+70,12,Quinton de Kock,Yuzvendra Chahal,10.961538461538462,8.6,True
+71,12,Ayush Badoni,Yuzvendra Chahal,11.058823529411764,8.31,True
+72,12,Quinton de Kock,Yuzvendra Chahal,11.159999999999998,8.33,True
+73,12,Ayush Badoni,Yuzvendra Chahal,11.26530612244898,9.43,True
+74,13,Quinton de Kock,Ravichandran Ashwin,11.5,3.88,False
+75,13,Krunal Pandya,Ravichandran Ashwin,11.617021276595745,3.16,False
+76,13,Krunal Pandya,Ravichandran Ashwin,11.608695652173912,3.62,False
+77,13,Krunal Pandya,Ravichandran Ashwin,11.866666666666667,3.49,False
+78,13,Quinton de Kock,Ravichandran Ashwin,12.0,3.87,False
+79,13,Krunal Pandya,Ravichandran Ashwin,12.13953488372093,3.55,False
+80,14,Krunal Pandya,Kuldeep Sen,12.285714285714286,3.57,False
+81,14,Krunal Pandya,Kuldeep Sen,12.292682926829269,3.59,False
+82,14,Quinton de Kock,Kuldeep Sen,12.45,3.15,False
+83,14,Quinton de Kock,Kuldeep Sen,12.76923076923077,3.07,False
+84,14,Krunal Pandya,Kuldeep Sen,12.947368421052632,3.12,False
+85,14,Krunal Pandya,Kuldeep Sen,12.972972972972972,3.1,False
+86,15,Krunal Pandya,Prasidh Krishna,13.166666666666666,3.11,False
+87,15,Krunal Pandya,Prasidh Krishna,13.542857142857143,3.08,False
+88,15,Krunal Pandya,Prasidh Krishna,13.235294117647058,3.64,False
+89,15,Quinton de Kock,Prasidh Krishna,13.454545454545455,3.73,False
+90,15,Krunal Pandya,Prasidh Krishna,13.6875,3.76,False
+91,15,Krunal Pandya,Prasidh Krishna,13.354838709677418,3.61,False
+92,16,Quinton de Kock,Yuzvendra Chahal,13.8,3.76,False
+93,16,Krunal Pandya,Yuzvendra Chahal,14.06896551724138,4.74,False
+94,16,Quinton de Kock,Yuzvendra Chahal,13.928571428571427,5.52,False
+95,16,Marcus Stoinis,Yuzvendra Chahal,14.444444444444445,5.84,False
+96,16,Krunal Pandya,Yuzvendra Chahal,14.76923076923077,4.69,False
+97,16,Dushmantha Chameera,Yuzvendra Chahal,15.36,0.5,False
+98,17,Marcus Stoinis,Trent Boult,15.0,0.5,False
+99,17,Dushmantha Chameera,Trent Boult,15.391304347826086,0.57,False
+100,17,Dushmantha Chameera,Trent Boult,15.545454545454547,0.54,False
+101,17,Marcus Stoinis,Trent Boult,16.0,0.5,False
+102,17,Dushmantha Chameera,Trent Boult,16.5,0.5,False
+103,17,Dushmantha Chameera,Trent Boult,16.105263157894736,0.71,False
+104,18,Marcus Stoinis,Yuzvendra Chahal,16.333333333333332,0.8,False
+105,18,Marcus Stoinis,Yuzvendra Chahal,15.176470588235293,1.37,False
+106,18,Marcus Stoinis,Yuzvendra Chahal,16.125,1.14,False
+107,18,Dushmantha Chameera,Yuzvendra Chahal,16.8,0.93,False
+108,18,Dushmantha Chameera,Yuzvendra Chahal,16.4,1.12,False
+109,18,Dushmantha Chameera,Yuzvendra Chahal,17.57142857142857,0.83,False
+110,18,Dushmantha Chameera,Yuzvendra Chahal,17.142857142857142,0.94,False
+111,18,Avesh Khan,Yuzvendra Chahal,18.461538461538463,0.5,False
+112,19,Marcus Stoinis,Prasidh Krishna,17.0,0.5,False
+113,19,Marcus Stoinis,Prasidh Krishna,16.5,0.5,False
+114,19,Marcus Stoinis,Prasidh Krishna,15.818181818181818,2.09,False
+115,19,Marcus Stoinis,Prasidh Krishna,16.2,1.56,False
+116,19,Marcus Stoinis,Prasidh Krishna,14.0,9.59,True
+117,19,Marcus Stoinis,Prasidh Krishna,15.75,3.8,False
+118,19,Marcus Stoinis,Prasidh Krishna,18.0,2.23,False
+119,20,Avesh Khan,Kuldeep Sen,15.0,10.0,True
+120,20,Marcus Stoinis,Kuldeep Sen,16.8,10.0,True
+121,20,Marcus Stoinis,Kuldeep Sen,21.0,10.0,True
+122,20,Marcus Stoinis,Kuldeep Sen,28.0,8.68,True
+123,20,Marcus Stoinis,Kuldeep Sen,36.0,1.17,False
+124,20,Marcus Stoinis,Kuldeep Sen,36.0,7.45,True
